@@ -22,21 +22,15 @@ public class Main {
         for (int i=1; i < N; i++) {
             S[i] = S[i-1] + temp[i]; // 합 배열
         }
+        
         int max = -101 * K;
         int sum = 0;
-        if (K == 2) {
-            for (int i =1; i<N; i++) {
-                int j = i-1;
-                if (temp[i] + temp[j] > max) max = temp[i] + temp[j];
-            }
-        }
-        else {
-            for (int i = K - 1; i < N; i++) {
+        
+        for (int i = K - 1; i < N; i++) {
                 int j = i - (K - 1);
                 if (j==0) sum = S[i];
                 else sum = S[i] - S[j-1];
                 if (sum > max) max = sum;
-            }
         }
         System.out.println(max);
     }
