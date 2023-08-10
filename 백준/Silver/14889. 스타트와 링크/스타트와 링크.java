@@ -35,11 +35,9 @@ public class Main {
             }
             calcStatus();
         } else {
-            int start = selected[k-1];
-            if (start==0) start = 1;
-            for (int cand = start; cand <= N; cand++) {
+            int start = selected[k-1]; // 이전에 쓰였던 숫자보다 크거나 같아야 함.
+            for (int cand = start + 1; cand <= N; cand++) {
                 // 중복 체크
-                if (numUsed[cand] == true) continue;
                 selected[k] = cand;
                 numUsed[cand] = true;
                 rec_func(k+1);
