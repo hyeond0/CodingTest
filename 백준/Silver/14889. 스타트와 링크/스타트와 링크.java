@@ -8,7 +8,9 @@ public class Main {
     static int[] selected;
     static boolean[] numUsed;
 
-    public static void main(String[] args) throws IOException {
+
+
+    private static void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         S = new int[N + 1][N + 1];
@@ -20,9 +22,6 @@ public class Main {
                 S[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        min = Integer.MAX_VALUE;
-        rec_func(1);
-        System.out.println(min);
     }
 
     private static void rec_func(int k) {
@@ -37,8 +36,9 @@ public class Main {
             calcStatus();
         } else {
             int start = selected[k-1];
+            if (start==0) start = 1;
             // 1-N 까지를 k번
-            for (int cand = start + 1; cand <= N; cand++) {
+            for (int cand = start; cand <= N; cand++) {
                 boolean isUsed = false;
                 for (int i = 1; i <= k; i++) {
                     if (selected[i] == cand) isUsed = true;
@@ -77,5 +77,12 @@ public class Main {
             }
         }
         return sum;
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        min = Integer.MAX_VALUE;
+        rec_func(1);
+        System.out.println(min);
     }
 }
