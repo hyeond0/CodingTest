@@ -37,19 +37,14 @@ public class Main {
         } else {
             int start = selected[k-1];
             if (start==0) start = 1;
-            // 1-N 까지를 k번
             for (int cand = start; cand <= N; cand++) {
-                boolean isUsed = false;
-                for (int i = 1; i <= k; i++) {
-                    if (selected[i] == cand) isUsed = true;
-                }
-                if (!isUsed) {
-                    selected[k] = cand;
-                    numUsed[cand] = true;
-                    rec_func(k+1);
-                    selected[k] = 0;
-                    numUsed[cand] = false;
-                }
+                // 중복 체크
+                if (numUsed[cand] == true) continue;
+                selected[k] = cand;
+                numUsed[cand] = true;
+                rec_func(k+1);
+                selected[k] = 0;
+                numUsed[cand] = false;
             }
         }
     }
