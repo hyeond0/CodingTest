@@ -1,61 +1,64 @@
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N;
+    static StringBuilder sb = new StringBuilder();
     static int[][] map;
+    static ArrayList<Integer> danzi = new ArrayList<>();
+    static int N, count;
     static boolean[][] visited;
-    static ArrayList<Integer> group;
     static int[][] dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 
-    static void input() {
-        Scanner scan = new Scanner(System.in);
-        N = scan.nextInt();
+    static void input() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
         map = new int[N][N];
+        visited = new boolean[N][N];
         for (int i = 0; i < N; i++) {
-            String s = scan.next();
-            String[] sArray = s.split("");
+            String[] m = br.readLine().split("");
             for (int j = 0; j < N; j++) {
-                map[i][j] = Integer.parseInt(sArray[j]);
+                map[i][j] = Integer.parseInt(m[j]);
             }
         }
-        visited = new boolean[N][N];
+
     }
 
+
     static void dfs(int x, int y) {
-        // 단지에 속한 집의 갯수 증가, visit 체크하기
-        group.set(group.size()-1, group.get(group.size()-1) + 1);
+        count++;
         visited[x][y] = true;
-        //인접한 집으로 새로운 방문하기
+
         for (int i = 0; i < 4; i++) {
             int nx = x + dir[i][0];
             int ny = y + dir[i][1];
-            if (nx < N && nx >= 0 && ny < N && ny >= 0) {
-                if (!visited[nx][ny] && map[nx][ny] == 1) {
-                    dfs(nx, ny);
-                }
-            }
+            if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+            if (visited[nx][ny]) continue;
+            if (map[nx][ny] == 0) continue;
+            dfs(nx, ny);
         }
     }
 
-    private static void pro() {
-        group = new ArrayList<>();
+    static void pro() {
+        count = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (!visited[i][j] && map[i][j] == 1) {
-                    group.add(0);
-                    dfs(i,j);
+                    dfs(i, j);
+                    danzi.add(count);
+                    count = 0;
                 }
             }
         }
 
-        System.out.println(group.size());
-        Collections.sort(group);
-        for (int s : group) {
-            System.out.println(s);
+        Collections.sort(danzi);
+        sb.append(danzi.size()).append('\n');
+        for (int house : danzi) {
+            sb.append(house).append('\n');
         }
+        System.out.println(sb.toString());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         input();
         pro();
     }
