@@ -1,4 +1,6 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
@@ -23,7 +25,6 @@ public class Main {
 
     }
 
-
     static void dfs(int x, int y) {
         count++;
         visited[x][y] = true;
@@ -39,7 +40,6 @@ public class Main {
     }
 
     static void pro() {
-        count = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (!visited[i][j] && map[i][j] == 1) {
