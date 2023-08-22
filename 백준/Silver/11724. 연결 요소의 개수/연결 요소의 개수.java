@@ -4,19 +4,16 @@ import java.util.*;
 public class Main {
     static int N, M;
     static boolean[] visit;
-    static ArrayList<Integer>[] adj;
+    static int[][] adj;
     private static void input() {
         Scanner scan = new Scanner(System.in);
         N  = scan.nextInt();
         M = scan.nextInt();
-        adj = new ArrayList[N + 1];
-        for (int i = 1; i <= N; i++) {
-            adj[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < M; i++) {
+        adj = new int[N+1][N+1];
+        for (int i = 1; i <= M; i++) {
             int u = scan.nextInt(), v = scan.nextInt();
-            adj[u].add(v);
-            adj[v].add(u);
+            adj[u][v] = 1;
+            adj[v][u] = 1;
         }
     }
 
@@ -38,10 +35,12 @@ public class Main {
 
         while (!Q.isEmpty()) {
             x = Q.poll();
-            for (int y : adj[x]) {
+            for (int y = 1; y <= N; y++) {
                 if (visit[y]) continue;
+                if (adj[x][y] == 0) continue;
                 Q.add(y);
                 visit[y] = true;
+                adj[x][y] = 0;
             }
         }
     }
