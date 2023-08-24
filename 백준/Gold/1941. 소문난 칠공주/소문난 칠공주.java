@@ -66,13 +66,9 @@ public class Main {
         int[] ret = new int[2];
         // 1 - 25 까지 중에서 뽑아온 7개를 2차원 배열 index에 맞게 저장.
         for (int i = 1; i <= 7; i++) {
-            int x = selected[i] / 5;
-            int y;
-            if (selected[i] % 5 == 0) {
-                x -= 1;
-                y = 4;
-            }
-            else y = selected[i] % 5 - 1;
+            int selectedNumber = selected[i];
+            int x = (selectedNumber - 1) / 5;
+            int y = (selectedNumber - 1) % 5;
             if (i == 1) {
                 ret[0] = x; // bfs 탐색을 위해 7개 중 맨 처음 뽑힌 정점 좌표를 x, y로 저장
                 ret[1] = y;
