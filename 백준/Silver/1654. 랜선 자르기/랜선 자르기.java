@@ -18,7 +18,6 @@ public class Main {
     }
 
     static boolean determination(long H) {
-        // H로 총합을 나눴을 때 11개가 만들어지는지ㅣ
         long sum = 0;
         for (int i = 1; i <= K; i++) {
             sum += A[i] / H;
@@ -27,7 +26,7 @@ public class Main {
     }
 
     static void pro() {
-        long L = 1, R = Integer.MAX_VALUE, result = 0;
+        long L = 1, R = (long) (Math.pow(2,31) - 1) * 10000, result = 0;
         while (L <= R) {
             long mid = (L + R) / 2;
             if (determination(mid)) {
