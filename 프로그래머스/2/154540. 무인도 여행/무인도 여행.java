@@ -30,9 +30,7 @@ class Solution {
             }
         }
         if (result.isEmpty()) {
-            int[] ans = new int[1];
-            ans[0] = -1;
-            return ans;
+            return new int[] {-1};
         }
         
         
