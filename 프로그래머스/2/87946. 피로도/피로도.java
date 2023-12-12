@@ -1,45 +1,43 @@
 class Solution {
-
-    int answer, dungeon;
-    int[] selected;
+    static int N, answer, max;
+    static int[] selected;
     public int solution(int k, int[][] dungeons) {
-        answer = -1;
-        dungeon = dungeons.length;
-        for (int i = 1; i <= dungeon; i++) {
-            selected = new int[i];
-            ref_func(0, k, dungeons, i);
-        }
+        N = dungeons.length;
+        max = k;
+        answer = Integer.MIN_VALUE;
+        selected = new int[N+1];
+        rec_func(1, dungeons);
         return answer;
     }
-
-    public void ref_func(int n, int k, int[][] dungeons, int select) {
-        if (n == select) {
-            int count = 0;
-            int presentPiro = k;
-            for (int i = 0; i < select; i++) {
-                int minPiro = dungeons[selected[i]][0];
-                int usePiro = dungeons[selected[i]][1];
-                if (minPiro > presentPiro) {
-                    return;
-                }
-                presentPiro -= usePiro;
-                count++;
-            }
-            answer = Math.max(answer, count);
+    
+    static void rec_func(int k, int[][] dungeons) {
+        if (k == N+1) {
+            answer = Math.max(answer, calc_piro(dungeons));
         } else {
-            for (int cand = 0; cand < dungeon; cand++) {
+            for (int cand = 1; cand <= N; cand++) {
                 boolean isUsed = false;
-                for (int i = 0; i < n; i++) {
-                    if (cand == selected[i]) {
-                        isUsed = true;
-                    }
+                for (int i = 1; i < k; i++) {
+                    if (selected[i] == cand) isUsed = true;
                 }
                 if (!isUsed) {
-                    selected[n] = cand;
-                    ref_func(n + 1, k, dungeons, select);
-                    selected[n] = 0;
+                    selected[k] = cand;
+                    rec_func(k+1, dungeons);
+                    selected[k] = 0;
                 }
             }
         }
+    }
+    static int calc_piro(int[][] dungeons) {
+        int m = max;
+        int idx = 0;
+        int count = 0;
+        for (int i = 1; i <= N; i++) {
+            idx = selected[i] - 1;
+            if (m < dungeons[idx][0]) return count;
+            if (m - dungeons[idx][1] < 0) return count;
+            m -= dungeons[idx][1];
+            count++;
+        }
+        return count;
     }
 }
