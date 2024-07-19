@@ -1,48 +1,99 @@
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    static StringBuilder sb = new StringBuilder();
-    static Scanner scan = new Scanner(System.in);
-    static int N, M;
-    static String[] A;
+	static int N, M;
+	static String[] A, B;
+	static FastScanner scan = new FastScanner();
+	static StringBuilder sb = new StringBuilder();
 
-    static void input() {
-        N = scan.nextInt();
-        M = scan.nextInt();
-        A = new String[N+1];
-        for (int i = 1; i <= N; i++) {
-            A[i] = scan.next();
-        }
-    }
-    static boolean binary_search(String[] A, int L, int R, String X) {
-        while(L <= R) {
-            int mid = (L + R) / 2;
-            if (A[mid].equals(X)) return true;
+	public static void main(String[] args) {
+		input();
+		pro();
+	}
 
-            if (A[mid].compareTo(X) > 0) // A가 더 클때
-                R = mid - 1;
-            else
-                L = mid + 1;
-        }
-        return false;
-    }
-    static void pro() {
-        // A 정렬하기
-        Arrays.sort(A,1,N+1);
-        // M 입력받기
-        List<String> dbj = new ArrayList<>();
-        for (int i = 1; i <= M; i++) {
-            String X = scan.next();
-            if (binary_search(A,1,N,X)) dbj.add(X);
-        }
-        sb.append(dbj.size()).append('\n');
-        Collections.sort(dbj);
+	static void input() {
+		N = scan.nextInt();
+		A = new String[N + 1];
+		M = scan.nextInt();
+		B = new String[M + 1];
+		for (int i = 1; i <= N; i++) {
+			A[i] = scan.next();
+		}
+		for (int i = 1; i <= M; i++) {
+			B[i] = scan.next();
+		}
+	}
 
-        for (String name : dbj) sb.append(name).append('\n');
-        System.out.println(sb.toString());
-    }
-    public static void main(String[] args) {
-        input();
-        pro();
-    }
+	static boolean binary_search(String[] A, int L, int R, String X) {
+		while (L <= R) {
+			int mid = (L + R) / 2;
+			if (A[mid].compareTo(X) == 0) {
+				return true;
+			}
+			if (A[mid].compareTo(X) < 0) {
+				L = mid + 1;
+			} else {
+				R = mid - 1;
+			}
+		}
+		return false;
+	}
+
+	static void pro() {
+		int count = 0;
+		Arrays.sort(A, 1, N + 1);
+		Arrays.sort(B, 1, M + 1);
+		if (N > M) {
+			for (int i = 1; i <= M; i++) {
+				if (binary_search(A, 1, N, B[i])) {
+					count++;
+					sb.append(B[i]).append('\n');
+				}
+			}
+		} else {
+			for (int i = 1; i <= N; i++) {
+				if (binary_search(B, 1, M, A[i])) {
+					count++;
+					sb.append(A[i]).append('\n');
+				}
+			}
+		}
+		System.out.println(count);
+		System.out.println(sb.toString());
+	}
+
+	static class FastScanner {
+		BufferedReader br;
+		StringTokenizer st;
+
+		FastScanner() {
+			br = new BufferedReader(new InputStreamReader(System.in));
+		}
+
+		String next() {
+			try {
+				while (st == null || !st.hasMoreElements()) {
+					st = new StringTokenizer(br.readLine());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return st.nextToken();
+		}
+
+		String nextLine() {
+			String str = "";
+			try {
+				str = br.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return str;
+		}
+
+		int nextInt() {
+			return Integer.parseInt(next());
+		}
+	}
 }
