@@ -2,10 +2,9 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-	static int N, X, ans;
-	static int[] A;
+	static int n, x;
+	static int[] a;
 	static FastScanner scan = new FastScanner();
-	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) {
 		input();
@@ -13,36 +12,27 @@ public class Main {
 	}
 
 	static void input() {
-		N = scan.nextInt();
-		A = new int[N + 1];
-		for (int i = 1; i <= N; i++) {
-			A[i] = scan.nextInt();
+		n = scan.nextInt();
+		a = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			a[i] = scan.nextInt();
 		}
-		X = scan.nextInt();
-	}
-
-	static boolean bin_search(int[] A, int L, int R, int X) {
-		while (L <= R) {
-			int mid = (L + R) / 2;
-			if (A[mid] == X) {
-				return true;
-			}
-
-			if (A[mid] < X) {
-				L = mid + 1;
-			} else {
-				R = mid - 1;
-			}
-		}
-		return false;
+		x = scan.nextInt();
 	}
 
 	static void pro() {
-		Arrays.sort(A, 1, N + 1);
-		int ans = 0;
-		for (int i = 1; i <= N - 1; i++) {
-			if (bin_search(A, i+1, N, X - A[i])) {
+		Arrays.sort(a, 1, n + 1);
+		int L = 1, R = n, ans = 0;
+		while (L < R) {
+			int sum = a[L] + a[R];
+			if (sum == x) {
 				ans++;
+				R--;
+			}
+			if (sum > x) {
+				R--;
+			} else {
+				L++;
 			}
 		}
 		System.out.println(ans);
@@ -57,24 +47,14 @@ public class Main {
 		}
 
 		String next() {
-			try {
-				while (st == null || !st.hasMoreElements()) {
+			while (st == null || !st.hasMoreElements()) {
+				try {
 					st = new StringTokenizer(br.readLine());
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 			return st.nextToken();
-		}
-
-		String nextLine() {
-			String str = "";
-			try {
-				str = br.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return str;
 		}
 
 		int nextInt() {
