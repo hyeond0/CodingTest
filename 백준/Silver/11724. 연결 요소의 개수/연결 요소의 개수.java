@@ -1,52 +1,88 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int N, M;
-    static boolean[] visit;
-    static int[][] adj;
-    private static void input() {
-        Scanner scan = new Scanner(System.in);
-        N  = scan.nextInt();
-        M = scan.nextInt();
-        adj = new int[N+1][N+1];
-        for (int i = 1; i <= M; i++) {
-            int u = scan.nextInt(), v = scan.nextInt();
-            adj[u][v] = 1;
-            adj[v][u] = 1;
-        }
-    }
+	static int N, M;
+	static int[][] dir = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
+	static ArrayList<Integer>[] adj;
+	static boolean[] visit;
 
-    private static void pro() {
-        visit = new boolean[N+1];
-        int ans = 0;
-        for (int i = 1; i <= N; i++) {
-            if (visit[i]) continue;
-            bfs(i);
-            ans++;
-        }
-        System.out.println(ans);
-    }
+	static FastScanner scan = new FastScanner();
+	static StringBuilder sb = new StringBuilder();
 
-    private static void bfs(int x) {
-        Queue<Integer> Q = new LinkedList<>();
-        visit[x] = true;
-        Q.add(x);
+	public static void main(String[] args) {
+		input();
+		pro();
+	}
 
-        while (!Q.isEmpty()) {
-            x = Q.poll();
-            for (int y = 1; y <= N; y++) {
-                if (visit[y]) continue;
-                if (adj[x][y] == 0) continue;
-                Q.add(y);
-                visit[y] = true;
-                adj[x][y] = 0;
-            }
-        }
-    }
+	static void input() {
+		N = scan.nextInt();
+		M = scan.nextInt();
+		adj = new ArrayList[N + 1];
+		for (int i = 1; i <= N; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < M; i++) {
+			int u = scan.nextInt();
+			int v = scan.nextInt();
+			adj[u].add(v);
+			adj[v].add(u);
+		}
+	}
 
-    public static void main(String[] args) {
-        input();
-        pro();
-    }
+	static void pro() {
+		visit = new boolean[N + 1];
+		int ans = 0;
+		for (int i = 1; i <= N; i++) {
+			if (!visit[i]) {
+				dfs(i);
+				ans++;
+			}
+		}
+		System.out.println(ans);
+	}
+
+	static void dfs(int x) {
+		visit[x] = true;
+
+		for (int y : adj[x]) {
+			if (visit[y])
+				continue;
+			dfs(y);
+		}
+	}
+
+	static class FastScanner {
+		StringTokenizer st;
+		BufferedReader br;
+
+		FastScanner() {
+			br = new BufferedReader(new InputStreamReader(System.in));
+		}
+
+		String next() {
+			while (st == null || !st.hasMoreElements()) {
+				try {
+					st = new StringTokenizer(br.readLine());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return st.nextToken();
+		}
+
+		int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		String nextLine() {
+			String str = "";
+			try {
+				str = br.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return str;
+		}
+	}
 }
