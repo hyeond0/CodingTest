@@ -1,72 +1,109 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-    static StringBuilder sb = new StringBuilder();
-    static int[][] map;
     static int N, M;
-    static boolean[][] visit;
-    static int[][] dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    static String[] A;
     static int[][] dist;
-    static void input() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        map = new int[N][M];
-        visit = new boolean[N][M];
+    static int[][] dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    static FastScanner scan = new FastScanner();
+
+    public static void main(String[] args) {
+        input();
+        pro();
+    }
+
+    static void input() {
+        N = scan.nextInt();
+        M = scan.nextInt();
+        A = new String[N];
         dist = new int[N][M];
         for (int i = 0; i < N; i++) {
-            String[] m = br.readLine().split("");
-            for (int j = 0; j < M; j++) {
-                map[i][j] = Integer.parseInt(m[j]);
-            }
+            A[i] = scan.nextLine();
         }
     }
 
-
-    static void bfs(int x, int y) {
+    static void pro() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                dist[i][j] = 1;
+                dist[i][j] = -1;
             }
         }
-        Queue<Integer> Que = new LinkedList<>();
-        Que.add(x);
-        Que.add(y); // 먼저 넣은게 x, 나중에 넣은 게 y
-        visit[x][y] = true;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (A[i].charAt(j) == '1' && dist[i][j] == -1) {
+                    bfs(i, j);
+                }
+            }
+        }
 
-        while(!Que.isEmpty()) {
-            x = Que.poll();
-            y = Que.poll();
+        System.out.println(dist[N - 1][M - 1]);
+    }
+
+    static void bfs(int x, int y) {
+        Queue<Integer> que = new LinkedList<>();
+        que.add(x);
+        que.add(y);
+        dist[x][y] = 1;
+
+        while (!que.isEmpty()) {
+            x = que.poll();
+            y = que.poll();
             for (int k = 0; k < 4; k++) {
                 int nx = x + dir[k][0];
                 int ny = y + dir[k][1];
-                if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
-                if (visit[nx][ny]) continue;
-                if (map[nx][ny] == 0) continue;
-                Que.add(nx);
-                Que.add(ny);
-                visit[nx][ny] = true;
+                if (nx < 0 || ny < 0 || nx >= N || ny >= M) {
+                    continue;
+                }
+                if (dist[nx][ny] != -1) {
+                    continue;
+                }
+                if (A[nx].charAt(ny) == '0') {
+                    continue;
+                }
+                que.add(nx);
+                que.add(ny);
                 dist[nx][ny] = dist[x][y] + 1;
             }
         }
     }
 
-    static void pro() {
-        bfs(0,0);
 
-        System.out.println(dist[N-1][M-1]);
-    }
+    static class FastScanner {
+        StringTokenizer st;
+        BufferedReader br;
 
-    public static void main(String[] args) throws IOException {
-        input();
-        pro();
+        FastScanner() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
     }
 }
-
-
-
-
