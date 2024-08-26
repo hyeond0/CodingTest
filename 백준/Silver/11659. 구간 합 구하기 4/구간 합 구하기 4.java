@@ -1,37 +1,58 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-//        String input[] = br.readLine().split(" "); // 공백을 기준으로 나누기
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+    static FastReader sc = new FastReader();
+    static StringBuilder sb = new StringBuilder();
 
-        int A[] = new int[n];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            A[i] = Integer.parseInt(st.nextToken());
-        }
-        int S[] = new int[n];
-        S[0] = A[0];
-        for (int i = 1; i < n; i++) {
-            S[i] = S[i - 1] + A[i];
+    public static void main(String[] args) {
+        int N = sc.nextInt();
+        int M = sc.nextInt();
+        int[] S = new int[N + 1];
+        for (int i = 1; i <= N; i++) {
+            int num = sc.nextInt();
+            S[i] = S[i - 1] + num;
         }
 
-        for (int i =0; i < m; i++) { // M번만큼 반복
-            st = new StringTokenizer(br.readLine()); // 인덱스는 0번부터 시작하므로 -1
-            int start = Integer.parseInt(st.nextToken()) - 1 ;
-            int end = Integer.parseInt(st.nextToken()) - 1;
-            if (start == 0) { // 첫 번째 수부터의 합 배열일 경우
-                System.out.println(S[end]);
+        for (int k = 0; k < M; k++) {
+            int i = sc.nextInt();
+            int j = sc.nextInt();
+            System.out.println(S[j] - S[i - 1]);
+        }
+    }
+
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
+
+        public FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            else {
-                System.out.println(S[end] - S[start - 1]);
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            return str;
         }
     }
 }
