@@ -8,20 +8,20 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
-        int A = scan.nextInt();
-        int B = scan.nextInt();
+        long A = scan.nextLong();
+        long B = scan.nextLong();
         if (A == B) {
-            System.out.println(0);
-            System.exit(0);
-        }
-        if (A > B) {
-            int tmp = A;
-            A = B;
-            B = tmp;
-        }
-        sb.append(B - A - 1).append('\n');
-        while (++A < B) {
-            sb.append(A).append(' ');
+            sb.append(0);
+        } else if (A > B) {
+            sb.append(A - B - 1).append('\n');
+            while (++B < A) {
+                sb.append(B).append(' ');
+            }
+        } else {
+            sb.append(B - A - 1).append('\n');
+            while (++A < B) {
+                sb.append(A).append(' ');
+            }
         }
         System.out.println(sb);
     }
@@ -47,6 +47,10 @@ public class Main {
 
         int nextInt() {
             return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
         }
 
         String nextLine() {
