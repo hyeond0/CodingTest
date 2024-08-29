@@ -1,64 +1,65 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int n, x;
-	static int[] a;
-	static FastScanner scan = new FastScanner();
+    static FastReader scan = new FastReader();
+    static StringBuilder sb = new StringBuilder();
 
-	public static void main(String[] args) {
-		input();
-		pro();
-	}
+    public static void main(String[] args) {
+        int[] A = new int[1000001];
+        int N = scan.nextInt();
+        for (int i = 0; i < N; i++) {
+            A[scan.nextInt()]++;
+        }
+        int X = scan.nextInt();
+        int ans = 0;
+        for (int i = 1; i <= 1000000; i++) {
+            if (A[i] > 0) {
+                if (X - i > 0 && X - i < 1000001 && A[X - i] > 0) {
+                    ans++;
+                }
+            }
+        }
+        System.out.println(ans / 2);
+    }
 
-	static void input() {
-		n = scan.nextInt();
-		a = new int[n + 1];
-		for (int i = 1; i <= n; i++) {
-			a[i] = scan.nextInt();
-		}
-		x = scan.nextInt();
-	}
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
 
-	static void pro() {
-		Arrays.sort(a, 1, n + 1);
-		int L = 1, R = n, ans = 0;
-		while (L < R) {
-			int sum = a[L] + a[R];
-			if (sum == x) {
-				ans++;
-				R--;
-			}
-			if (sum > x) {
-				R--;
-			} else {
-				L++;
-			}
-		}
-		System.out.println(ans);
-	}
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
 
-	static class FastScanner {
-		BufferedReader br;
-		StringTokenizer st;
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
 
-		FastScanner() {
-			br = new BufferedReader(new InputStreamReader(System.in));
-		}
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
 
-		String next() {
-			while (st == null || !st.hasMoreElements()) {
-				try {
-					st = new StringTokenizer(br.readLine());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			return st.nextToken();
-		}
+        long nextLong() {
+            return Long.parseLong(next());
+        }
 
-		int nextInt() {
-			return Integer.parseInt(next());
-		}
-	}
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
+    }
 }
