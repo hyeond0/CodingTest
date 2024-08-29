@@ -4,28 +4,72 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        String N = st.nextToken();
-        char[] A = N.toCharArray();
-        int[] B = new int[10];
-        for (char a : A) {
-            int num = a - '0';
-            B[num]++;
+    static FastReader scan = new FastReader();
+    static StringBuilder sb = new StringBuilder();
+
+    public static void main(String[] args) {
+        String s = scan.nextLine();
+        int[] A = new int[10];
+        for (int i = 0; i < s.length(); i++) {
+            A[s.charAt(i) - '0']++;
         }
-        int six = B[6], nine = B[9], max = 0, max_idx = 0;
-        for (int i = 0; i < 10; i++) {
-            if (B[i] > max) {
-                max = B[i];
+        int max_idx = 0;
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i <= 9; i++) {
+            if (A[i] > max) {
                 max_idx = i;
-            } else if (B[i] == max && i != 6 && i != 9) {
-                max_idx = i;
+                max = A[i];
             }
         }
         if (max_idx == 6 || max_idx == 9) {
-            max = Math.round((float) (six + nine) / 2);
+            int same = Math.round((float) (A[6] + A[9]) / 2);
+            A[6] = same;
+            A[9] = same;
+            max = Integer.MIN_VALUE;
+            for (int i = 0; i <= 9; i++) {
+                if (A[i] > max) {
+                    max = A[i];
+                }
+            }
         }
         System.out.println(max);
+    }
+
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
+
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
     }
 }
