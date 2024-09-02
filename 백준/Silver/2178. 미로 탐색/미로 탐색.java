@@ -6,11 +6,12 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int N, M;
-    static String[] A;
+    static int n, m, ans;
     static int[][] dist;
-    static int[][] dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-    static FastScanner scan = new FastScanner();
+    static char[][] board;
+    static FastReader scan = new FastReader();
+    static StringBuilder sb = new StringBuilder();
+    static int[][] dir = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 
     public static void main(String[] args) {
         input();
@@ -18,66 +19,69 @@ public class Main {
     }
 
     static void input() {
-        N = scan.nextInt();
-        M = scan.nextInt();
-        A = new String[N];
-        dist = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            A[i] = scan.nextLine();
+        n = scan.nextInt();
+        m = scan.nextInt();
+        board = new char[n][m];
+        dist = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            String s = scan.nextLine();
+            for (int j = 0; j < m; j++) {
+                board[i][j] = s.charAt(j);
+            }
         }
     }
 
     static void pro() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 dist[i][j] = -1;
             }
         }
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (A[i].charAt(j) == '1' && dist[i][j] == -1) {
+
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (board[i][j] == '1' && dist[i][j] == -1) {
                     bfs(i, j);
                 }
             }
         }
-
-        System.out.println(dist[N - 1][M - 1]);
+        System.out.println(dist[n - 1][m - 1]);
     }
 
     static void bfs(int x, int y) {
-        Queue<Integer> que = new LinkedList<>();
-        que.add(x);
-        que.add(y);
+        Queue<Integer> Q = new LinkedList<>();
+        Q.add(x);
+        Q.add(y);
         dist[x][y] = 1;
 
-        while (!que.isEmpty()) {
-            x = que.poll();
-            y = que.poll();
+        while (!Q.isEmpty()) {
+            x = Q.poll();
+            y = Q.poll();
             for (int k = 0; k < 4; k++) {
                 int nx = x + dir[k][0];
                 int ny = y + dir[k][1];
-                if (nx < 0 || ny < 0 || nx >= N || ny >= M) {
+                if (nx < 0 || ny < 0 || nx >= n || ny >= m) {
                     continue;
                 }
                 if (dist[nx][ny] != -1) {
                     continue;
                 }
-                if (A[nx].charAt(ny) == '0') {
+                if (board[nx][ny] != '1') {
                     continue;
                 }
-                que.add(nx);
-                que.add(ny);
                 dist[nx][ny] = dist[x][y] + 1;
+                Q.add(nx);
+                Q.add(ny);
             }
         }
     }
 
-
-    static class FastScanner {
-        StringTokenizer st;
+    static class FastReader {
         BufferedReader br;
+        StringTokenizer st;
 
-        FastScanner() {
+        FastReader() {
             br = new BufferedReader(new InputStreamReader(System.in));
         }
 
