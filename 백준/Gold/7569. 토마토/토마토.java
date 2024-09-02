@@ -1,100 +1,132 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N, M, H;
+    static int n, m, h;
     static int[][][] dist;
-    static int[][][] map;
-    static int[][] dir = {{1, 0, 0}, {-1, 0, 0}, {0, -1, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, -1}};
+    static int[][][] board;
+    static FastReader scan = new FastReader();
+    static int[][] dir = {{-1, 0, 0}, {1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
 
-    private static void input() {
-        Scanner scan = new Scanner(System.in);
-        M = scan.nextInt();
-        N = scan.nextInt();
-        H = scan.nextInt();
-        dist = new int[H][N][M];
-        map = new int[H][N][M];
-        for (int i = 0; i < H; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int k = 0; k < M; k++) {
-                    map[i][j][k] = scan.nextInt();
+    public static void main(String[] args) {
+        input();
+        pro();
+    }
+
+    static void input() {
+        m = scan.nextInt();
+        n = scan.nextInt();
+        h = scan.nextInt();
+        board = new int[n][m][h];
+        dist = new int[n][m][h];
+        for (int k = 0; k < h; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    board[i][j][k] = scan.nextInt();
                 }
             }
         }
     }
 
-    private static void bfs() {
+    static void pro() {
+        bfs();
+        boolean isValid = true;
+        int max = 0;
+        for (int k = 0; k < h; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (dist[i][j][k] == -1 && board[i][j][k] == 0) {
+                        isValid = false;
+                        break;
+                    }
+                    max = Math.max(max, dist[i][j][k]);
+                }
+            }
+        }
+
+        if (isValid) {
+            System.out.println(max);
+        } else {
+            System.out.println(-1);
+        }
+    }
+
+    static void bfs() {
         Queue<Integer> Q = new LinkedList<>();
-        for (int i = 0; i < H; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int k = 0; k < M; k++) {
-                    if (dist[i][j][k] == -1 && map[i][j][k] == 1) {
-                        // 방문x 익은 토마토
+        for (int k = 0; k < h; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    dist[i][j][k] = -1;
+                    if (board[i][j][k] == 1) {
+                        dist[i][j][k] = 0;
                         Q.add(i);
                         Q.add(j);
                         Q.add(k);
-                        dist[i][j][k] = 1;
                     }
                 }
             }
         }
 
         while (!Q.isEmpty()) {
-            int h = Q.poll();
             int x = Q.poll();
             int y = Q.poll();
+            int z = Q.poll();
             for (int k = 0; k < 6; k++) {
-                int nh = h + dir[k][0];
+                int nz = z + dir[k][0];
                 int nx = x + dir[k][1];
                 int ny = y + dir[k][2];
-                if (nh < 0 || nx < 0 || ny < 0 || nh >= H || nx >= N || ny >= M) continue;
-                if (dist[nh][nx][ny] != -1) continue;
-                if (map[nh][nx][ny] == -1) continue;
-                Q.add(nh);
+                if (nx < 0 || ny < 0 || nz < 0 || nx >= n || ny >= m || nz >= h) {
+                    continue;
+                }
+                if (dist[nx][ny][nz] != -1) {
+                    continue;
+                }
+                if (board[nx][ny][nz] == -1) {
+                    continue;
+                }
+                dist[nx][ny][nz] = dist[x][y][z] + 1;
                 Q.add(nx);
                 Q.add(ny);
-                dist[nh][nx][ny] = dist[h][x][y] + 1;
+                Q.add(nz);
             }
         }
     }
 
-    private static void pro() {
-        // dist 초기화 및 모두 익었는지 체크
-        boolean tomato = false;
-        for (int i = 0; i < H; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int k = 0; k < M; k++) {
-                    if (map[i][j][k] == 0) tomato = true;
-                    dist[i][j][k] = -1;
-                }
-            }
-        }
-        if (!tomato) {
-            System.out.println(0);
-            return;
+    static class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
+
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
         }
 
-        bfs();
-        // 최소 기간
-        boolean isRipe = true;
-        int max = Integer.MIN_VALUE;
-        int ripeCount = 0;
-        for (int i = 0; i < H; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int k = 0; k < M; k++) {
-                    if (map[i][j][k] == 0 && dist[i][j][k] == -1) isRipe = false;
-                    if (dist[i][j][k] > max) max = dist[i][j][k];
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            if (isRipe) ripeCount++;
+            return st.nextToken();
         }
-        if (ripeCount == H) System.out.println(max-1);
-        else System.out.println(-1);
-    }
 
-    public static void main(String[] args) {
-        input();
-        pro();
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
     }
 }
