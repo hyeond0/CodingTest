@@ -7,9 +7,9 @@ import java.util.StringTokenizer;
 
 public class Main {
     static int N, K;
+    static int[] board;
     static int[] dist;
-    static FastScanner scan = new FastScanner();
-    static StringBuilder sb = new StringBuilder();
+    static FastReader scan = new FastReader();
 
     public static void main(String[] args) {
         input();
@@ -19,49 +19,8 @@ public class Main {
     static void input() {
         N = scan.nextInt();
         K = scan.nextInt();
+        board = new int[100001];
         dist = new int[100001];
-    }
-
-    static void bfs(int start) {
-        for (int i = 0; i <= 100000; i++) {
-            dist[i] = -1;
-        }
-        Queue<Integer> Q = new LinkedList<>();
-        Q.add(start);
-        dist[start] = 0;
-
-        while (!Q.isEmpty()) {
-            int x = Q.poll();
-            int minus = x - 1;
-            if (minus >= 0) {
-                if (dist[minus] == -1) {
-                    dist[minus] = dist[x] + 1;
-                    Q.add(minus);
-                } else {
-                    dist[minus] = Math.min(dist[x] + 1, dist[minus]);
-                }
-            }
-
-            int plus = x + 1;
-            if (plus >= 0 && plus <= 100000) {
-                if (dist[plus] == -1) {
-                    dist[plus] = dist[x] + 1;
-                    Q.add(plus);
-                } else {
-                    dist[plus] = Math.min(dist[x] + 1, dist[plus]);
-                }
-            }
-
-            int doubleX = x * 2;
-            if (doubleX >= 0 && doubleX <= 100000) {
-                if (dist[doubleX] == -1) {
-                    dist[doubleX] = dist[x] + 1;
-                    Q.add(doubleX);
-                } else {
-                    dist[doubleX] = Math.min(dist[x] + 1, dist[doubleX]);
-                }
-            }
-        }
     }
 
     static void pro() {
@@ -69,12 +28,65 @@ public class Main {
         System.out.println(dist[K]);
     }
 
+    static void bfs(int x) {
+        for (int i = 0; i <= 100000; i++) {
+            dist[i] = -1;
+        }
+        Queue<Integer> Q = new LinkedList<>();
+        Q.add(x);
+        dist[x] = 0;
+        while (!Q.isEmpty()) {
+            x = Q.poll();
+            if (dist_check(x - 1)) {
+                Q.add(x - 1);
+                if (dist[x - 1] == -1) {
+                    dist[x - 1] = dist[x] + 1;
+                } else {
+                    dist[x - 1] = Math.min(dist[x - 1], dist[x] + 1);
+                }
+                if (x - 1 == K) {
+                    return;
+                }
+            }
 
-    static class FastScanner {
-        StringTokenizer st;
+            if (dist_check(x + 1)) {
+                Q.add(x + 1);
+                if (dist[x + 1] == -1) {
+                    dist[x + 1] = dist[x] + 1;
+                } else {
+                    dist[x + 1] = Math.min(dist[x + 1], dist[x] + 1);
+                }
+                if (x - 1 == K) {
+                    return;
+                }
+            }
+
+            if (dist_check(x * 2)) {
+                Q.add(x * 2);
+                if (dist[x * 2] == -1) {
+                    dist[x * 2] = dist[x] + 1;
+                } else {
+                    dist[x * 2] = Math.min(dist[x * 2], dist[x] + 1);
+                }
+                if (x * 2 == K) {
+                    return;
+                }
+            }
+        }
+    }
+
+    static boolean dist_check(int nx) {
+        if (nx < 0 || nx > 100000) {
+            return false;
+        }
+        return dist[nx] == -1;
+    }
+
+    static class FastReader {
         BufferedReader br;
+        StringTokenizer st;
 
-        FastScanner() {
+        FastReader() {
             br = new BufferedReader(new InputStreamReader(System.in));
         }
 
