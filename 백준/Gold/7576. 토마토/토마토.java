@@ -1,33 +1,62 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N,M;
-    static int[][] map, dist;
-    static boolean[][] visit;
-    static int[][] dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-    private static void input() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        M = Integer.parseInt(st.nextToken());
-        N = Integer.parseInt(st.nextToken());
-        visit = new boolean[N][M];
-        map = new int[N][M];
-        dist = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
+    static int n, m;
+    static int[][] dist;
+    static int[][] board;
+    static FastReader scan = new FastReader();
+    static int[][] dir = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+
+    public static void main(String[] args) {
+        input();
+        pro();
+    }
+
+    static void input() {
+        m = scan.nextInt();
+        n = scan.nextInt();
+        board = new int[n][m];
+        dist = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                board[i][j] = scan.nextInt();
             }
         }
     }
 
-    private static void bfs() {
+    static void pro() {
+        bfs();
+
+        boolean isValid = true;
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (dist[i][j] == -1 && board[i][j] == 0) {
+                    isValid = false;
+                    break;
+                }
+                max = Math.max(max, dist[i][j]);
+            }
+        }
+
+        if (isValid) {
+            System.out.println(max);
+        } else {
+            System.out.println(-1);
+        }
+    }
+
+    static void bfs() {
         Queue<Integer> Q = new LinkedList<>();
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (map[i][j] == 1) {
-                    visit[i][j] = true;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dist[i][j] = -1;
+                if (board[i][j] == 1) {
                     dist[i][j] = 0;
                     Q.add(i);
                     Q.add(j);
@@ -35,49 +64,59 @@ public class Main {
             }
         }
 
-        while(!Q.isEmpty()) {
+        while (!Q.isEmpty()) {
             int x = Q.poll();
             int y = Q.poll();
             for (int k = 0; k < 4; k++) {
                 int nx = x + dir[k][0];
                 int ny = y + dir[k][1];
-                if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
-                if (visit[nx][ny]) continue;
-                if (map[nx][ny] != 0) continue;
+                if (nx < 0 || ny < 0 || nx >= n || ny >= m) {
+                    continue;
+                }
+                if (dist[nx][ny] != -1) {
+                    continue;
+                }
+                if (board[nx][ny] == -1) {
+                    continue;
+                }
+                dist[nx][ny] = dist[x][y] + 1;
                 Q.add(nx);
                 Q.add(ny);
-                visit[nx][ny] = true;
-                dist[nx][ny] = dist[x][y] + 1;
             }
         }
     }
 
-    private static void pro() {
-        // dist 초기화
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                dist[i][j] = -1;
-            }
-        }
-        // bfs 탐색
-        bfs();
+    static class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
 
-        // 탐색이 끝났는데 map 중 0이 있다면 -1 출력
-        // 없다면 dist의 max 출력
-        boolean isRipe = true;
-        int max = Integer.MIN_VALUE;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (dist[i][j] == -1 && map[i][j] == 0) isRipe = false;
-                max = Math.max(dist[i][j], max);
-            }
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
         }
-        if (!isRipe) System.out.println(-1);
-        else System.out.println(max);
-    }
 
-    public static void main(String[] args) throws IOException {
-        input();
-        pro();
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
     }
 }
