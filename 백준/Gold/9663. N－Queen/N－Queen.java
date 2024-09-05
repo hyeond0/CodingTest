@@ -5,15 +5,16 @@ import java.util.StringTokenizer;
 
 public class Main {
     static int n, count;
-    static boolean[] isUsed1, isUsed2, isUsed3;
+    static int[] selected;
     static FastReader scan = new FastReader();
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
         n = scan.nextInt();
-        isUsed1 = new boolean[n];
-        isUsed2 = new boolean[2 * n - 1];
-        isUsed3 = new boolean[2 * n - 1];
+        selected = new int[n];
+        for (int i = 0; i < n; i++) {
+            selected[i] = -1;
+        }
         func(0);
         System.out.println(count);
     }
@@ -25,25 +26,28 @@ public class Main {
         }
         for (int i = 0; i < n; i++) {
             if (!is_attackable(cur, i)) {
-                isUsed1[i] = true;
-                isUsed2[cur + i] = true;
-                isUsed3[cur - i + n - 1] = true;
+                selected[cur] = i;
                 func(cur + 1);
-                isUsed1[i] = false;
-                isUsed2[cur + i] = false;
-                isUsed3[cur - i + n - 1] = false;
+                selected[cur] = -1;
             }
         }
     }
 
     static boolean is_attackable(int x, int y) {
-        if (isUsed1[y]) {
-            return true;
+        for (int i = 0; i < n; i++) {
+            if (selected[i] == y) {
+                return true;
+            }
+
+            if (selected[i] != -1 && i + selected[i] == x + y) {
+                return true;
+            }
+
+            if (selected[i] != -1 && i - selected[i] + n - 1 == x - y + n - 1) {
+                return true;
+            }
         }
-        if (isUsed2[x + y]) {
-            return true;
-        }
-        return isUsed3[x - y + n - 1];
+        return false;
     }
 
     static class FastReader {
