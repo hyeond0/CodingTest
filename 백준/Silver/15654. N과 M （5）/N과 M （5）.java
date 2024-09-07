@@ -1,47 +1,79 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N, M;
-    static int[] selected;
-    static int[] num;
+    static int n, m;
+    static int[] arr, selected;
+    static boolean[] isUsed;
+    static FastReader scan = new FastReader();
     static StringBuilder sb = new StringBuilder();
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        selected = new int[M + 1];
-        num = new int[N + 1];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            num[i] = Integer.parseInt(st.nextToken());
+    public static void main(String[] args) {
+        n = scan.nextInt();
+        m = scan.nextInt();
+        arr = new int[n];
+        selected = new int[n];
+        isUsed = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = scan.nextInt();
         }
-        Arrays.sort(num);
-        rec_func(1);
-
-        System.out.println(sb.toString());
+        Arrays.sort(arr);
+        rec_func(0);
+        System.out.println(sb);
     }
 
-    private static void rec_func(int k) {
-        if (k == M + 1) {
-            for (int i = 1; i <= M; i++) {
-                sb.append(selected[i]).append(' ');
+    static void rec_func(int k) {
+        if (k == m) {
+            for (int i = 0; i < m; i++) {
+                sb.append(arr[selected[i]]).append(' ');
             }
             sb.append('\n');
-        } else {
-            for (int cand = 1; cand <= N; cand++) {
-                boolean isUsed = false;
-                for (int i = 1; i <= k; i++) {
-                    if(selected[i]==num[cand]) isUsed=true;
-                }
-                if (!isUsed) {
-                    selected[k] = num[cand];
-                    rec_func(k + 1);
-                    selected[k] = 0;
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (!isUsed[i]) {
+                selected[k] = i;
+                isUsed[i] = true;
+                rec_func(k + 1);
+                isUsed[i] = false;
+            }
+        }
+    }
+
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
+
+        public FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
         }
     }
 }
