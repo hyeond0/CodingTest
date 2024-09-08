@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -21,30 +19,24 @@ public class Main {
             arr[i] = scan.nextInt();
         }
         Arrays.sort(arr);
-        rec_func(0);
+        rec_func(0, 0);
         System.out.println(sb.toString());
     }
 
-    static void rec_func(int k) {
+    static void rec_func(int k, int st) {
         if (k == m) {
             for (int i = 0; i < m; i++) {
-                sb.append(arr[selected[i]]).append(' ');
+                sb.append(selected[i]).append(' ');
             }
             sb.append('\n');
             return;
         }
-        int before_value = 0;
-        int before_idx = 0;
-        int st = 0;
-        if (k != 0) {
-            st = selected[k - 1];
-        }
+        int tmp = -1;
         for (int i = st; i < n; i++) {
-            if (!(before_value == arr[i] && before_idx != i)) {
-                selected[k] = i;
-                before_value = arr[i];
-                before_idx = i;
-                rec_func(k + 1);
+            if (arr[i] != tmp) {
+                selected[k] = arr[i];
+                tmp = selected[k];
+                rec_func(k + 1, i);
             }
         }
     }
