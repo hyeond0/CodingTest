@@ -4,22 +4,19 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int n, ans;
-    static int[][] board, board_tmp;
-    static int[] selected;
+    static int n;
+    static int[][] board, board2;
     static FastReader scan = new FastReader();
 
     public static void main(String[] args) {
         input();
-        rec_func(0);
-        System.out.println(ans);
+        pro();
     }
 
     static void input() {
         n = scan.nextInt();
         board = new int[n][n];
-        board_tmp = new int[n][n];
-        selected = new int[5];
+        board2 = new int[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 board[i][j] = scan.nextInt();
@@ -27,131 +24,64 @@ public class Main {
         }
     }
 
-    static void rec_func(int k) {
-        if (k == 5) {
-            // 0, 1, 2, 3 방향으로 5개를 뽑는다.
-            // 0 남쪽, 1 서쪽, 2 북쪽, 3 동쪽
+    static void pro() {
+        int mx = 0;
+        for (int tmp = 0; tmp < 1024; tmp++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    board_tmp[i][j] = board[i][j];
+                    board2[i][j] = board[i][j];
                 }
             }
-
+            int brute = tmp;
             for (int i = 0; i < 5; i++) {
-                switch (selected[i]) {
-                    case 0:
-                        go_down();
-                        break;
-                    case 1:
-                        go_left();
-                        break;
-                    case 2:
-                        go_up();
-                        break;
-                    case 3:
-                        go_right();
-                        break;
-                }
+                int dir = brute % 4;
+                brute /= 4;
+                tilt(dir);
             }
-            int value = 0;
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    value = Math.max(value, board_tmp[i][j]);
+                    mx = Math.max(mx, board2[i][j]);
                 }
             }
-            ans = Math.max(ans, value);
-            return;
         }
-        for (int dir = 0; dir <= 3; dir++) {
-            selected[k] = dir;
-            rec_func(k + 1);
+        System.out.println(mx);
+    }
+
+    static void rotate() {
+        int[][] tmp = new int[21][21];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                tmp[i][j] = board2[i][j];
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                board2[i][j] = tmp[n - 1 - j][i];
+            }
         }
     }
 
-    static void go_left() {
+    static void tilt(int dir) {
+        while (dir-- > 0) {
+            rotate();
+        }
         for (int i = 0; i < n; i++) {
-            int[] tmp = new int[21];
+            int[] tilted = new int[21];
             int idx = 0;
             for (int j = 0; j < n; j++) {
-                if (board_tmp[i][j] > 0) {
-                    if (tmp[idx] == 0) { // 해당 위치가 빈 칸이라면
-                        tmp[idx] = board_tmp[i][j];
-                    } else if (board_tmp[i][j] == tmp[idx]) { // 같은 값이라면
-                        tmp[idx] += board_tmp[i][j];
-                        idx++;
-                    } else { // 다른 값이 있다면
-                        tmp[++idx] = board_tmp[i][j];
-                    }
+                if (board2[i][j] == 0) {
+                    continue;
+                }
+                if (tilted[idx] == 0) {
+                    tilted[idx] = board2[i][j];
+                } else if (tilted[idx] == board2[i][j]) {
+                    tilted[idx++] *= 2;
+                } else {
+                    tilted[++idx] = board2[i][j];
                 }
             }
             for (int j = 0; j < n; j++) {
-                board_tmp[i][j] = tmp[j];
-            }
-        }
-    }
-
-    static void go_right() {
-        for (int i = 0; i < n; i++) {
-            int[] tmp = new int[n];
-            int idx = n - 1;
-            for (int j = n - 1; j >= 0; j--) {
-                if (board_tmp[i][j] > 0) {
-                    if (tmp[idx] == 0) { // 해당 위치가 빈 칸이라면
-                        tmp[idx] = board_tmp[i][j];
-                    } else if (board_tmp[i][j] == tmp[idx]) { // 같은 값이라면
-                        tmp[idx] += board_tmp[i][j];
-                        idx--;
-                    } else { // 다른 값이 있다면
-                        tmp[--idx] = board_tmp[i][j];
-                    }
-                }
-            }
-            for (int j = 0; j < n; j++) {
-                board_tmp[i][j] = tmp[j];
-            }
-        }
-    }
-
-    static void go_up() {
-        for (int j = 0; j < n; j++) {
-            int[] tmp = new int[n];
-            int idx = 0;
-            for (int i = 0; i < n; i++) {
-                if (board_tmp[i][j] > 0) {
-                    if (tmp[idx] == 0) { // 해당 위치가 빈 칸이라면
-                        tmp[idx] = board_tmp[i][j];
-                    } else if (board_tmp[i][j] == tmp[idx]) { // 같은 값이라면
-                        tmp[idx] += board_tmp[i][j];
-                        idx++;
-                    } else { // 다른 값이 있다면
-                        tmp[++idx] = board_tmp[i][j];
-                    }
-                }
-            }
-            for (int i = 0; i < n; i++) {
-                board_tmp[i][j] = tmp[i];
-            }
-        }
-    }
-
-    static void go_down() {
-        for (int j = 0; j < n; j++) {
-            int[] tmp = new int[n];
-            int idx = n - 1;
-            for (int i = n - 1; i >= 0; i--) {
-                if (board_tmp[i][j] > 0) {
-                    if (tmp[idx] == 0) { // 해당 위치가 빈 칸이라면
-                        tmp[idx] = board_tmp[i][j];
-                    } else if (board_tmp[i][j] == tmp[idx]) { // 같은 값이라면
-                        tmp[idx] += board_tmp[i][j];
-                        idx--;
-                    } else { // 다른 값이 있다면
-                        tmp[--idx] = board_tmp[i][j];
-                    }
-                }
-            }
-            for (int i = 0; i < n; i++) {
-                board_tmp[i][j] = tmp[i];
+                board2[i][j] = tilted[j];
             }
         }
     }
