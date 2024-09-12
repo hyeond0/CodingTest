@@ -1,105 +1,114 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-
-    static int N, M, d, robotX, robotY;
-    static int[][] map;
+    static int n, m, r, c, d, ans;
+    static int[][] board;
     static int[][] dir = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    static FastReader scan = new FastReader();
 
     public static void main(String[] args) {
         input();
-        process();
+        pro();
+        System.out.println(ans);
     }
 
-    private static void input() {
-        Scanner scan = new Scanner(System.in);
-        N = scan.nextInt();
-        M = scan.nextInt();
-        robotX = scan.nextInt();
-        robotY = scan.nextInt();
+    static void input() {
+        n = scan.nextInt();
+        m = scan.nextInt();
+        r = scan.nextInt();
+        c = scan.nextInt();
         d = scan.nextInt();
-        map = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                map[i][j] = scan.nextInt();
+        board = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                board[i][j] = scan.nextInt();
             }
         }
     }
 
-    private static void process() {
-        int answer = 0;
-        // 작동 시작
+    static void pro() {
         while (true) {
-            //1번
-            if (map[robotX][robotY] == 0) {
-                map[robotX][robotY] = 2;
-                answer++;
+            if (board[r][c] == 0) {
+                board[r][c] = 2;
+                ans++;
             }
-            // 주변 4칸 중 빈칸 체크
-            boolean isPossible = false;
+            boolean isCleaning = true;
             for (int k = 0; k < 4; k++) {
-                int nx = robotX + dir[k][0];
-                int ny = robotY + dir[k][1];
-                if (map[nx][ny] == 0) {
-                    isPossible = true;
+                int nr = r + dir[k][0];
+                int nc = c + dir[k][1];
+                if (nr < 0 || nc < 0 || nr >= n || nc >= m) {
+                    continue;
                 }
+                if (board[nr][nc] != 0) {
+                    continue;
+                }
+                isCleaning = false;
+                break;
             }
-            //3 - 빈칸이 있는 경우
-            if (isPossible) {
-                int ccw = 0;
-                if (d == 0) {
-                    ccw = 3;
+            if (isCleaning) {
+                int nr = r - dir[d][0];
+                int nc = c - dir[d][1];
+                if (nr < 0 || nc < 0 || nr >= n || nc >= m) {
+                    return;
                 }
-                if (d == 1) {
-                    ccw = 0;
+                if (board[nr][nc] == 1) {
+                    return;
                 }
-                if (d == 2) {
-                    ccw = 1;
-                }
-                if (d == 3) {
-                    ccw = 2;
-                }
-                d = ccw; // 반시계 90도 회전
-                int nx = robotX + dir[d][0];
-                int ny = robotY + dir[d][1];
-                if (map[nx][ny] == 0) {
-                    // 3-2, 빈칸일 경우 한 칸 전진
-                    robotX = nx;
-                    robotY = ny;
-                }
+                r = nr;
+                c = nc;
             } else {
-                // 2. 빈 칸이 없는 경우
-                int back = 0;
-                if (d == 0) {
-                    // 남쪽
-                    back = 2;
+                while (true) {
+                    if (d == 0) {
+                        d = 3;
+                    } else {
+                        d -= 1;
+                    }
+                    int nr = r + dir[d][0];
+                    int nc = c + dir[d][1];
+                    if (board[nr][nc] == 0) {
+                        r = nr;
+                        c = nc;
+                        break;
+                    }
                 }
-                if (d == 1) {
-                    // 서쪽
-                    back = 3;
-                }
-                if (d == 2) {
-                    // 북족
-                    back = 0;
-                }
-                if (d == 3) {
-                    // 동쪽
-                    back = 1;
-                }
-                int nx = robotX + dir[back][0];
-                int ny = robotY + dir[back][1];
-                // 후진할 수 없다면 break
-                if (nx < 0 || ny < 0 || nx > N || ny > M) {
-                    break;
-                }
-                if (map[nx][ny] == 1) {
-                    break;
-                }
-                // 후진할 수 있다면
-                robotX = nx;
-                robotY = ny;
             }
         }
-        System.out.println(answer);
+    }
+
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
+
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
     }
 }
