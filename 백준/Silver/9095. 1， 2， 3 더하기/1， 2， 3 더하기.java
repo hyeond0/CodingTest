@@ -1,32 +1,51 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int[] Dy;
+    static int n, ans;
+    static int[] d;
+    static FastReader scan = new FastReader();
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
-        preprocess();
-        pro();
-    }
-
-    private static void preprocess() {
-        Dy = new int[15];
-        Dy[1] = 1;
-        Dy[2] = 2;
-        Dy[3] = 4;
+        d = new int[12];
+        d[1] = 1;
+        d[2] = 2;
+        d[3] = 4;
         for (int i = 4; i <= 11; i++) {
-            Dy[i] = Dy[i-1] + Dy[i-2] + Dy[i-3];
+            d[i] = d[i - 1] + d[i - 2] + d[i - 3];
         }
-    }
-
-    private static void pro() {
-        Scanner scan = new Scanner(System.in);
-        StringBuilder sb = new StringBuilder();
         int T = scan.nextInt();
         while (T-- > 0) {
-            int n = scan.nextInt();
-            sb.append(Dy[n]).append('\n');
+            n = scan.nextInt();
+            sb.append(d[n]).append('\n');
         }
-        System.out.println(sb);
+        System.out.println(sb.toString());
+    }
+
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
+
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
     }
 }
