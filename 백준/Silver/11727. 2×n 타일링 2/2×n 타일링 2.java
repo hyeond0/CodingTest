@@ -10,10 +10,14 @@ public class Main {
 
     public static void main(String[] args) {
         n = scan.nextInt();
-        d = new int[1001];
+        d = new int[n + 1];
+        if (n == 1) {
+            System.out.println(1);
+            return;
+        }
         d[1] = 1;
         d[2] = 3;
-        for (int i = 3; i <= 1000; i++) {
+        for (int i = 3; i <= n; i++) {
             d[i] = (d[i - 1] + d[i - 2] * 2) % 10007;
         }
         System.out.println(d[n]);
