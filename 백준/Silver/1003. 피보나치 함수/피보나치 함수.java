@@ -1,39 +1,51 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
+    static int n;
+    static int[][] fibo;
+    static FastReader scan = new FastReader();
+    static StringBuilder sb = new StringBuilder();
 
-    static int[] DyZero, DyOne;
-
-    private static void preprocess() {
-        DyZero = new int[45];
-        DyOne = new int[45];
-        DyZero[0] = 1;
-        DyOne[0] = 0;
-        DyZero[1] = 0;
-        DyOne[1] = 1;
-        DyZero[2] = 1;
-        DyOne[2] = 1;
-        for (int i = 3; i <= 40; i ++) {
-            DyZero[i] = DyZero[i-2] + DyZero[i-1];
-            DyOne[i] = DyOne[i-2] + DyOne[i-1];
-        }
-    }
-
-    private static void pro() {
-        Scanner scan = new Scanner(System.in);
-        StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) {
         int T = scan.nextInt();
+        fibo = new int[42][2];
+        fibo[0][0] = 1;
+        fibo[1][1] = 1;
+        for (int i = 2; i <= 40; i++) {
+            fibo[i][0] = fibo[i - 1][0] + fibo[i - 2][0];
+            fibo[i][1] = fibo[i - 1][1] + fibo[i - 2][1];
+        }
         while (T-- > 0) {
-            int n = scan.nextInt();
-            sb.append(DyZero[n]).append(' ')
-                    .append(DyOne[n]).append('\n');
+            n = scan.nextInt();
+            sb.append(fibo[n][0]).append(' ').append(fibo[n][1]).append('\n');
         }
         System.out.println(sb);
     }
 
-    public static void main(String[] args) {
-        preprocess();
-        pro();
+    static class FastReader {
+        StringTokenizer st;
+        BufferedReader br;
+
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
     }
 }
