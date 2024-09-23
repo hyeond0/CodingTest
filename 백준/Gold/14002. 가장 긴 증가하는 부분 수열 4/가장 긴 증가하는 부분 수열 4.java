@@ -1,8 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -22,35 +21,35 @@ public class Main {
 
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j <= i; j++) {
-                if (a[i] > a[j]) {
-                    if (d[j] + 1 > d[i]) {
-                        d[i] = d[j] + 1;
-                        pre[i] = j;
-                    }
+                if (a[i] > a[j] && d[i] < d[j] + 1) {
+                    d[i] = d[j] + 1;
+                    pre[i] = j;
                 }
             }
         }
 
         int max = 0;
+        int max_idx = 0;
         for (int i = 1; i <= n; i++) {
             if (d[i] > max) {
-                sb.setLength(0);
                 max = d[i];
-                List<Integer> pres = new ArrayList<>();
-                sb.append(max).append('\n');
-                int cur = i;
-                while (cur != 0) {
-                    pres.add(cur);
-                    cur = pre[cur];
-                }
-                for (int j = pres.size() - 1; j >= 0; j--) {
-                    sb.append(a[pres.get(j)]).append(' ');
-                }
+                max_idx = i;
             }
+        }
+        sb.append(max).append('\n');
+        Stack<Integer> stack = new Stack<>();
+        int cur = max_idx;
+
+        while (cur != 0) {
+            stack.push(cur);
+            cur = pre[cur];
+        }
+
+        while (!stack.isEmpty()) {
+            sb.append(a[stack.pop()]).append(' ');
         }
         System.out.println(sb);
     }
-
 
     static class FastReader {
         StringTokenizer st;
