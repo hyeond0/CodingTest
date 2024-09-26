@@ -22,15 +22,14 @@ public class Main {
     }
 
     static void pro() {
+        int prev = a[n - 1];
         int ans = 0;
-        for (int i = n - 1; i > 0; i--) {
-            if (a[i] > a[i - 1]) {
-                continue;
+        for (int i = n - 2; i >= 0; i--) {
+            if (a[i] >= prev) {
+                ans += a[i] - prev + 1;
+                a[i] = prev - 1;
             }
-            while (a[i] <= a[i - 1]) {
-                ans++;
-                a[i - 1]--;
-            }
+            prev = a[i];
         }
         System.out.println(ans);
     }
