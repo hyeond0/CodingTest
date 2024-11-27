@@ -1,53 +1,68 @@
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N,M;
-    static int[] A,B;
+    static int N, M;
+    static int[] A;
+    static FastReader scan = new FastReader();
     static StringBuilder sb = new StringBuilder();
-    static void input() {
-        Scanner scan = new Scanner(System.in);
-        N = scan.nextInt();
-        A = new int[N+1];
-        for (int i = 1; i <= N; i++) {
-            A[i] = scan.nextInt();
-        }
-        M = scan.nextInt();
-        B = new int[M+1];
-        for (int i = 1; i <= M; i++) {
-            B[i] = scan.nextInt();
-        }
-    }
-
-    static int findNumber(int[] A, int L, int R, int X) {
-        // 값을 탐색해서 맞다면 반환, 아니면 0 반환
-        int result = 0;
-        while (L <= R) {
-            int mid = (L + R) / 2;
-            if (A[mid] == X) {
-                result = 1;
-                break;
-            } else if (A[mid] < X) {
-                L = mid + 1;
-            } else {
-                R = mid - 1;
-            }
-        }
-        return result;
-    }
-    static void pro() {
-        //A를 정렬 후 B에 있는 값들을 이진탐색
-        Arrays.sort(A, 1, N+1);
-
-        for (int i = 1; i <= M; i++) {
-            // B에 값들을 대조해서 있는지 확인. 있다면 1, 없다면 0
-            sb.append(findNumber(A, 1, N, B[i])).append('\n');
-        }
-
-        System.out.println(sb.toString());
-    }
 
     public static void main(String[] args) {
-        input();
-        pro();
+        N = scan.nextInt();
+        A = new int[N];
+        for (int i = 0; i < N; i++) {
+            A[i] = scan.nextInt();
+        }
+        Arrays.sort(A);
+        M = scan.nextInt();
+        for (int i = 0; i < M; i++) {
+            int target = scan.nextInt();
+            sb.append(binary_search(target)).append('\n');
+        }
+        System.out.println(sb);
+    }
+
+    static int binary_search(int target) {
+        int st = 0;
+        int en = N - 1;
+        while (st <= en) {
+            int mid = (st + en) / 2;
+            if (A[mid] > target) {
+                en = mid - 1;
+            } else if (A[mid] < target) {
+                st = mid + 1;
+            } else {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+
+    static class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
+
+        FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
     }
 }
