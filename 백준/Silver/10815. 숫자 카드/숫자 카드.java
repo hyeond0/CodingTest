@@ -19,7 +19,7 @@ public class Main {
         Arrays.sort(a);
         m = scan.nextInt();
         for (int i = 0; i < m; i++) {
-            if (Arrays.binarySearch(a, scan.nextInt()) >= 0) {
+            if (binary_search(scan.nextInt()) >= 0) {
                 sb.append(1);
             } else {
                 sb.append(0);
@@ -27,6 +27,22 @@ public class Main {
             sb.append(' ');
         }
         System.out.println(sb);
+    }
+
+    static int binary_search(int target) {
+        int st = 0;
+        int en = n - 1;
+        while (st <= en) {
+            int mid = (st + en) / 2;
+            if (a[mid] < target) {
+                st = mid + 1;
+            } else if (a[mid] > target) {
+                en = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -1;
     }
 
     static class FastReader {
